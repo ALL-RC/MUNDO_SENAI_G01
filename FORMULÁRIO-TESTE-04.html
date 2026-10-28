@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENAI - Portal de Cadastro e Matrícula de Alunos</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        senai: {
+                            blue: '#005DAA',
+                            dark: '#003B70',
+                            light: '#E6F0FA',
+                            accent: '#0084E3'
+                        },
+                        softgreen: {
+                            DEFAULT: '#22c55e',
+                            hover: '#16a34a',
+                            light: '#f0fdf4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- html2pdf.js library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Toast animation */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .animate-slide-in {
+            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        /* Step transitions */
+        .step-content {
+            display: none;
+        }
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-100 text-slate-800 antialiased selection:bg-senai-blue selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-md w-full px-4 pointer-events-none"></div>
+
+    <!-- Header Section -->
+    <header class="bg-senai-blue text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 py-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <!-- SENAI SVG Logo Representation -->
+                <div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center justify-center">
+                    <span class="text-senai-blue font-black text-2xl tracking-tighter italic border-b-4 border-senai-blue leading-none">SENAI</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white leading-tight">Serviço Nacional de Aprendizagem Industrial</h1>
+                    <p class="text-xs text-senai-light font-medium">Portal Unificado de Inscrição e Matrícula de Alunos</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-senai-dark/60 px-3 py-1.5 rounded-full text-xs text-blue-100 border border-blue-400/30">
+                <i class="fa-solid me-1 fa-shield-halved text-emerald-400"></i>
+                <span>Ambiente Seguro de Cadastro</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:px-6">
+        
+        <!-- Wizard Card -->
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden">
+            
+            <!-- Wizard Step Header Indicator -->
+            <div class="bg-slate-50 border-b border-slate-200 p-6 sm:p-8">
+                <div class="max-w-3xl mx-auto">
+                    <!-- Progress Bar Background -->
+                    <div class="relative flex items-center justify-between">
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-slate-200 w-full -z-0"></div>
+                        <div id="progress-bar-fill" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-senai-blue transition-all duration-500 ease-out -z-0" style="width: 0%;"></div>
+
+                        <!-- Step 1 Node -->
+                        <div class="relative z-10 flex flex-col items-center group cursor-default">
+                            <div id="node-1" class="w-11 h-11 rounded-full bg-senai-blue text-white flex items-center justify-center font-bold text-base shadow-md ring-4 ring-white transition-all duration-300">
+                                1
+                            </div>
+                            <span id="label-1" class="mt-2 text-xs sm:text-sm font-semibold text-senai-blue">Dados Pessoais</span>
+                        </div>
+
+                        <!-- Step 2 Node -->
+                        <div class="relative z-10 flex flex-col items-center group cursor-default">
+                            <div id="node-2" class="w-11 h-11 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-base ring-4 ring-white transition-all duration-300">
+                                2
+                            </div>
+                            <span id="label-2" class="mt-2 text-xs sm:text-sm font-medium text-slate-400">Endereço</span>
+                        </div>
+
+                        <!-- Step 3 Node -->
+                        <div class="relative z-10 flex flex-col items-center group cursor-default">
+                            <div id="node-3" class="w-11 h-11 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-base ring-4 ring-white transition-all duration-300">
+                                3
+                            </div>
+                            <span id="label-3" class="mt-2 text-xs sm:text-sm font-medium text-slate-400">Informações do Curso</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <form id="senai-registration-form" novalidate class="p-6 sm:p-10">
+                
+                <!-- ==================== PÁGINA 1: DADOS PESSOAIS ==================== -->
+                <div id="step-1" class="step-content active space-y-6">
+                    <div class="border-b border-slate-200 pb-4 mb-6">
+                        <h2 class="text-2xl font-bold text-senai-dark flex items-center gap-2">
+                            <i class="fa-solid fa-user-gear text-senai-blue"></i>
+                            Página 1: Informações Pessoais do Aluno
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">Preencha todos os dados identificadores do aluno. Todos os campos são obrigatórios.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nome Completo -->
+                        <div class="md:col-span-2">
+                            <label for="nome_completo" class="block text-sm font-medium text-slate-700 mb-1">
+                                Nome Completo <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <input type="text" id="nome_completo" name="nome_completo" maxlength="4000"
+                                    placeholder="Ex: João da Silva Santos"
+                                    class="text-only-field w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Apenas letras e caracteres especiais (números são bloqueados automáticos).</p>
+                        </div>
+
+                        <!-- Data de Nascimento -->
+                        <div>
+                            <label for="data_nascimento" class="block text-sm font-medium text-slate-700 mb-1">
+                                Data de Nascimento <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <input type="date" id="data_nascimento" name="data_nascimento"
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">O aluno deve ter entre 15 e 75 anos de idade.</p>
+                        </div>
+
+                        <!-- CPF -->
+                        <div>
+                            <label for="cpf" class="block text-sm font-medium text-slate-700 mb-1">
+                                CPF <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-id-card"></i>
+                                </div>
+                                <input type="text" id="cpf" name="cpf" maxlength="14" placeholder="000.000.000-00"
+                                    class="numeric-only-field w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Será feita validação matemática dos dígitos verificadores.</p>
+                        </div>
+
+                        <!-- Nome do Pai, Mãe ou Responsável Legal -->
+                        <div class="md:col-span-2">
+                            <label for="nome_responsavel" class="block text-sm font-medium text-slate-700 mb-1">
+                                Nome do Pai, Mãe ou Responsável Legal <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-users text-sm"></i>
+                                </div>
+                                <input type="text" id="nome_responsavel" name="nome_responsavel" maxlength="4000"
+                                    placeholder="Ex: Maria das Dores Silva"
+                                    class="text-only-field w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Apenas texto (números não são permitidos).</p>
+                        </div>
+
+                        <!-- E-mail Pessoal -->
+                        <div>
+                            <label for="email_pessoal" class="block text-sm font-medium text-slate-700 mb-1">
+                                E-mail Pessoal <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <input type="email" id="email_pessoal" name="email_pessoal" maxlength="4000"
+                                    placeholder="aluno@email.com"
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                            </div>
+                        </div>
+
+                        <!-- E-mail Institucional -->
+                        <div>
+                            <label for="email_institucional" class="block text-sm font-medium text-slate-700 mb-1">
+                                E-mail Institucional <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+                                <input type="email" id="email_institucional" name="email_institucional" maxlength="4000"
+                                    placeholder="aluno@aluno.senai.br"
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PÁGINA 2: ENDEREÇO ==================== -->
+                <div id="step-2" class="step-content space-y-6">
+                    <div class="border-b border-slate-200 pb-4 mb-6">
+                        <h2 class="text-2xl font-bold text-senai-dark flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-senai-blue"></i>
+                            Página 2: Informações de Endereço Residencial
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">Preencha o endereço residencial completo do aluno. Apenas o complemento é opcional.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- CEP -->
+                        <div>
+                            <label for="cep" class="block text-sm font-medium text-slate-700 mb-1">
+                                CEP <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-mail-bulk"></i>
+                                </div>
+                                <input type="text" id="cep" name="cep" maxlength="9" placeholder="00000-000"
+                                    class="numeric-only-field w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                                <div id="cep-loading" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-senai-blue">
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Apenas números. O CEP busca o endereço automaticamente.</p>
+                        </div>
+
+                        <!-- País -->
+                        <div>
+                            <label for="pais" class="block text-sm font-medium text-slate-700 mb-1">
+                                País <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="pais" name="pais" maxlength="4000" value="Brasil"
+                                class="text-only-field w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                        </div>
+
+                        <!-- Estado (UF) -->
+                        <div>
+                            <label for="estado" class="block text-sm font-medium text-slate-700 mb-1">
+                                Estado (UF) <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="estado" name="estado"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                                <option value="">Selecione o Estado</option>
+                                <option value="AC">Acre (AC)</option>
+                                <option value="AL">Alagoas (AL)</option>
+                                <option value="AP">Amapá (AP)</option>
+                                <option value="AM">Amazonas (AM)</option>
+                                <option value="BA">Bahia (BA)</option>
+                                <option value="CE">Ceará (CE)</option>
+                                <option value="DF">Distrito Federal (DF)</option>
+                                <option value="ES">Espírito Santo (ES)</option>
+                                <option value="GO">Goiás (GO)</option>
+                                <option value="MA">Maranhão (MA)</option>
+                                <option value="MT">Mato Grosso (MT)</option>
+                                <option value="MS">Mato Grosso do Sul (MS)</option>
+                                <option value="MG">Minas Gerais (MG)</option>
+                                <option value="PA">Pará (PA)</option>
+                                <option value="PB">Paraíba (PB)</option>
+                                <option value="PR">Paraná (PR)</option>
+                                <option value="PE">Pernambuco (PE)</option>
+                                <option value="PI">Piauí (PI)</option>
+                                <option value="RJ">Rio de Janeiro (RJ)</option>
+                                <option value="RN">Rio Grande do Norte (RN)</option>
+                                <option value="RS">Rio Grande do Sul (RS)</option>
+                                <option value="RO">Rondônia (RO)</option>
+                                <option value="RR">Roraima (RR)</option>
+                                <option value="SC">Santa Catarina (SC)</option>
+                                <option value="SP">São Paulo (SP)</option>
+                                <option value="SE">Sergipe (SE)</option>
+                                <option value="TO">Tocantins (TO)</option>
+                            </select>
+                        </div>
+
+                        <!-- Cidade -->
+                        <div>
+                            <label for="cidade" class="block text-sm font-medium text-slate-700 mb-1">
+                                Cidade <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="cidade" name="cidade" maxlength="4000" placeholder="Ex: São Paulo"
+                                class="text-only-field w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                        </div>
+
+                        <!-- Bairro -->
+                        <div>
+                            <label for="bairro" class="block text-sm font-medium text-slate-700 mb-1">
+                                Bairro <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="bairro" name="bairro" maxlength="4000" placeholder="Ex: Centro"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                        </div>
+
+                        <!-- Logradouro -->
+                        <div>
+                            <label for="logradouro" class="block text-sm font-medium text-slate-700 mb-1">
+                                Logradouro <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="logradouro" name="logradouro" maxlength="4000" placeholder="Rua, Avenida, Alameda..."
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                        </div>
+
+                        <!-- Número -->
+                        <div>
+                            <label for="numero" class="block text-sm font-medium text-slate-700 mb-1">
+                                Número <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="numero" name="numero" maxlength="10" placeholder="Ex: 123"
+                                class="numeric-only-field w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                        </div>
+
+                        <!-- Complemento (Opcional) -->
+                        <div class="md:col-span-2">
+                            <label for="complemento" class="block text-sm font-medium text-slate-700 mb-1">
+                                Complemento <span class="text-slate-400 font-normal">(Opcional - Ex: Bloco A, Apto 102)</span>
+                            </label>
+                            <input type="text" id="complemento" name="complemento" maxlength="4000" placeholder="Bloco, apartamento, ponto de referência..."
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PÁGINA 3: CURSO ==================== -->
+                <div id="step-3" class="step-content space-y-6">
+                    <div class="border-b border-slate-200 pb-4 mb-6">
+                        <h2 class="text-2xl font-bold text-senai-dark flex items-center gap-2">
+                            <i class="fa-solid fa-book-open-reader text-senai-blue"></i>
+                            Página 3: Informações do Curso SENAI
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">Informe a modalidade e os detalhes do curso frequentado pelo aluno.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nome do Curso -->
+                        <div class="md:col-span-2">
+                            <label for="nome_curso" class="block text-sm font-medium text-slate-700 mb-1">
+                                Nome do Curso <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="nome_curso" name="nome_curso"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                                <option value="">Selecione o Curso SENAI</option>
+                                <option value="Técnico em Desenvolvimento de Sistemas">Técnico em Desenvolvimento de Sistemas</option>
+                                <option value="Técnico em Eletrotécnica">Técnico em Eletrotécnica</option>
+                                <option value="Técnico em Automação Industrial">Técnico em Automação Industrial</option>
+                                <option value="Técnico em Mecânica">Técnico em Mecânica</option>
+                                <option value="Técnico em Mecatrônica">Técnico em Mecatrônica</option>
+                                <option value="Técnico em Logística">Técnico em Logística</option>
+                                <option value="Técnico em Edificações">Técnico em Edificações</option>
+                                <option value="Técnico em Segurança do Trabalho">Técnico em Segurança do Trabalho</option>
+                                <option value="Técnico em Eletrônica">Técnico em Eletrônica</option>
+                                <option value="Técnico em Refrigeração e Climatização">Técnico em Refrigeração e Climatização</option>
+                            </select>
+                        </div>
+
+                        <!-- Turno -->
+                        <div>
+                            <label for="turno" class="block text-sm font-medium text-slate-700 mb-1">
+                                Turno de Estudo <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="turno" name="turno"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                                <option value="">Selecione o Turno</option>
+                                <option value="Matutino">Matutino (Manhã)</option>
+                                <option value="Vespertino">Vespertino (Tarde)</option>
+                                <option value="Noturno">Noturno (Noite)</option>
+                                <option value="Integral">Integral</option>
+                            </select>
+                        </div>
+
+                        <!-- Modalidade -->
+                        <div>
+                            <label for="modalidade" class="block text-sm font-medium text-slate-700 mb-1">
+                                Modalidade <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="modalidade" name="modalidade"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                required>
+                                <option value="">Selecione a Modalidade</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="EAD (Educação a Distância)">EAD (Educação a Distância)</option>
+                            </select>
+                        </div>
+
+                        <!-- Nome do Instrutor Responsável -->
+                        <div class="md:col-span-2">
+                            <label for="nome_instrutor" class="block text-sm font-medium text-slate-700 mb-1">
+                                Nome do Instrutor Responsável <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative rounded-lg shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-chalkboard-user"></i>
+                                </div>
+                                <input type="text" id="nome_instrutor" name="nome_instrutor" maxlength="4000"
+                                    placeholder="Ex: Prof. Roberto Carlos Oliveira"
+                                    class="text-only-field w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-senai-blue focus:border-senai-blue focus:bg-white text-slate-900 transition-colors"
+                                    required>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Apenas texto (números são bloqueados automáticos).</p>
+                        </div>
+                    </div>
+
+                    <!-- Resumo/Confirmação de Finalização -->
+                    <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 mt-6 flex items-start gap-3">
+                        <i class="fa-solid fa-circle-info text-senai-blue text-lg mt-0.5"></i>
+                        <div class="text-xs sm:text-sm text-slate-700">
+                            <p class="font-semibold text-senai-dark">Finalização do Formulário:</p>
+                            <p>Ao clicar em <strong class="text-emerald-700">"Finalizar e Gerar PDF"</strong>, os dados inseridos serão validados e o comprovante oficial de cadastro em formato PDF será baixado automaticamente para seu dispositivo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PÁGINA DE SUCESSO ==================== -->
+                <div id="step-success" class="step-content text-center py-8 space-y-6">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <h2 class="text-3xl font-extrabold text-slate-900">Cadastro Concluído com Sucesso!</h2>
+                        <p class="text-slate-600 max-w-lg mx-auto">As informações do aluno foram validadas e registradas. O arquivo do formulário PDF foi gerado e o download deve iniciar automaticamente.</p>
+                    </div>
+
+                    <div id="summary-card" class="bg-slate-50 border border-slate-200 rounded-xl p-6 text-left max-w-2xl mx-auto space-y-3">
+                        <h3 class="font-bold text-senai-dark text-lg border-b border-slate-200 pb-2">Resumo da Inscrição</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                            <p><span class="font-semibold text-slate-600">Aluno:</span> <span id="summary-nome">-</span></p>
+                            <p><span class="font-semibold text-slate-600">CPF:</span> <span id="summary-cpf">-</span></p>
+                            <p><span class="font-semibold text-slate-600">Curso:</span> <span id="summary-curso">-</span></p>
+                            <p><span class="font-semibold text-slate-600">Turno/Modalidade:</span> <span id="summary-turno">-</span></p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
+                        <button type="button" id="btn-redownload" class="px-6 py-3 bg-senai-blue hover:bg-senai-dark text-white font-semibold rounded-lg shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-arrow-down"></i> Baixar PDF Novamente
+                        </button>
+                        <button type="button" id="btn-restart" class="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> Novo Cadastro
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer Wizard Buttons -->
+                <div id="wizard-navigation" class="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between gap-4">
+                    <button type="button" id="btn-prev" class="hidden px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition items-center gap-2 border border-slate-300">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar
+                    </button>
+                    <div></div> <!-- Spacer -->
+                    <button type="button" id="btn-next" class="px-7 py-3 bg-softgreen hover:bg-softgreen-hover text-white font-bold rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-2 text-base">
+                        <span>Avançar</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <!-- Page Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 space-y-1">
+            <p class="font-semibold text-slate-600">SENAI - Serviço Nacional de Aprendizagem Industrial</p>
+            <p>Formulário Oficial de Cadastro de Alunos • Sistema Integrado de Informações Acadêmicas</p>
+        </div>
+    </footer>
+
+    <!-- HIDDEN PDF DOCUMENT TEMPLATE TO BE PRINTED BY HTML2PDF -->
+    <div class="hidden">
+        <div id="pdf-document" class="p-8 bg-white text-slate-900 font-sans" style="width: 210mm; min-height: 297mm; box-sizing: border-box;">
+            
+            <!-- SENAI PDF Header -->
+            <div style="border-bottom: 3px solid #005DAA;" class="pb-4 mb-6 flex justify-between items-end">
+                <div>
+                    <h1 style="color: #005DAA;" class="text-3xl font-black italic tracking-tighter">SENAI</h1>
+                    <p class="text-xs font-bold text-slate-600 uppercase tracking-wider">Serviço Nacional de Aprendizagem Industrial</p>
+                </div>
+                <div class="text-right">
+                    <h2 class="text-lg font-bold text-slate-800">FICHA DE MATRÍCULA E CADASTRO</h2>
+                    <p class="text-xs text-slate-500">Documento Oficial de Registro de Aluno</p>
+                    <p class="text-xs text-slate-400 mt-0.5" id="pdf-date"></p>
+                </div>
+            </div>
+
+            <!-- Protocol Header Badge -->
+            <div class="bg-slate-100 border border-slate-300 rounded p-3 mb-6 flex justify-between text-xs">
+                <div><strong>Protocolo de Cadastro:</strong> <span id="pdf-protocolo">SENAI-2026-0000</span></div>
+                <div><strong>Situação:</strong> <span class="text-emerald-700 font-bold">Inscrição Validada</span></div>
+            </div>
+
+            <!-- Block 1: Dados Pessoais -->
+            <div class="mb-6">
+                <h3 style="background-color: #005DAA;" class="text-white font-bold text-sm px-3 py-1.5 rounded-t">
+                    1. INFORMAÇÕES PESSOAIS DO ALUNO
+                </h3>
+                <table class="w-full text-xs border-collapse border border-slate-300">
+                    <tbody>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50 w-1/4">Nome Completo:</td>
+                            <td class="border border-slate-300 p-2 font-bold text-slate-800" id="pdf-nome" colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">CPF:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-cpf"></td>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Data de Nascimento:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-nascimento"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Pai / Mãe / Responsável:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-responsavel" colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">E-mail Pessoal:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-email-pessoal"></td>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">E-mail Institucional:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-email-inst"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Block 2: Endereço -->
+            <div class="mb-6">
+                <h3 style="background-color: #005DAA;" class="text-white font-bold text-sm px-3 py-1.5 rounded-t">
+                    2. ENDEREÇO RESIDENCIAL
+                </h3>
+                <table class="w-full text-xs border-collapse border border-slate-300">
+                    <tbody>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50 w-1/4">Logradouro:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-logradouro" colspan="2"></td>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50 w-1/6">Nº:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-numero"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Complemento:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-complemento" colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Bairro:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-bairro"></td>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">CEP:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-cep" colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Cidade:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-cidade"></td>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Estado / UF:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-estado"></td>
+                            <td class="border border-slate-300 p-2" id="pdf-pais"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Block 3: Curso -->
+            <div class="mb-8">
+                <h3 style="background-color: #005DAA;" class="text-white font-bold text-sm px-3 py-1.5 rounded-t">
+                    3. DADOS DO CURSO E MODALIDADE
+                </h3>
+                <table class="w-full text-xs border-collapse border border-slate-300">
+                    <tbody>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50 w-1/4">Curso Selecionado:</td>
+                            <td class="border border-slate-300 p-2 font-bold text-slate-800" id="pdf-curso" colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Turno de Estudo:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-turno"></td>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Modalidade:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-modalidade"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-slate-300 p-2 font-semibold bg-slate-50">Instrutor Responsável:</td>
+                            <td class="border border-slate-300 p-2" id="pdf-instrutor" colspan="3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Declaration & Signatures -->
+            <div class="mt-12 text-xs text-slate-600 space-y-8">
+                <p class="text-justify leading-relaxed">
+                    Declaro, para os devidos fins de direito, que todas as informações acima prestadas são verdadeiras e autênticas, estando ciente das normas internas e regulamento disciplinar da instituição SENAI.
+                </p>
+
+                <div class="grid grid-cols-2 gap-12 pt-12">
+                    <div class="text-center border-t border-slate-400 pt-2">
+                        <p class="font-bold text-slate-800" id="pdf-sig-aluno"></p>
+                        <p class="text-slate-500 text-[10px]">Assinatura do Aluno / Responsável</p>
+                    </div>
+                    <div class="text-center border-t border-slate-400 pt-2">
+                        <p class="font-bold text-slate-800">SENAI - Secretaria Acadêmica</p>
+                        <p class="text-slate-500 text-[10px]">Carimbo e Visto da Instituição</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- State Management ---
+            let currentStep = 1;
+            const maxSteps = 3;
+
+            // Toast Cooldown Manager (to prevent toast notification spamming during typing)
+            let lastToastTime = 0;
+            const toastCooldown = 1500;
+
+            // --- Toast Notification Manager ---
+            function showToast(message, type = 'error') {
+                const now = Date.now();
+                if (now - lastToastTime < toastCooldown) return; // Prevent toast spamming
+                lastToastTime = now;
+
+                const toastContainer = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                
+                const bgColor = type === 'error' ? 'bg-rose-600' : (type === 'warning' ? 'bg-amber-600' : 'bg-emerald-600');
+                const icon = type === 'error' ? 'fa-circle-exclamation' : (type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-check');
+
+                toast.className = `${bgColor} text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium animate-slide-in pointer-events-auto border border-white/20`;
+                toast.innerHTML = `
+                    <i class="fa-solid ${icon} text-lg"></i>
+                    <span class="flex-1">${message}</span>
+                    <button type="button" class="text-white/80 hover:text-white text-base ml-2 focus:outline-none" onclick="this.parentElement.remove()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+
+                toastContainer.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3500);
+            }
+
+            // --- Input Masking Helpers ---
+            function applyCPFMask(value) {
+                return value
+                    .replace(/\D/g, '')
+                    .replace(/(\d{3})(\d)/, '$1.$2')
+                    .replace(/(\d{3})(\d)/, '$1.$2')
+                    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+                    .substring(0, 14);
+            }
+
+            function applyCEPMask(value) {
+                return value
+                    .replace(/\D/g, '')
+                    .replace(/(\d{5})(\d)/, '$1-$2')
+                    .substring(0, 9);
+            }
+
+            // --- Validation Functions ---
+
+            // 1. CPF Mathematical Validation (Modulo 11)
+            function isValidCPF(cpfRaw) {
+                const cpf = cpfRaw.replace(/\D/g, '');
+                if (cpf.length !== 11) return false;
+                if (/^(\d)\1{10}$/.test(cpf)) return false; // Block repeated digits (111.111.111-11, etc)
+
+                let sum = 0;
+                for (let i = 0; i < 9; i++) sum += parseInt(cpf.charAt(i)) * (10 - i);
+                let rev = 11 - (sum % 11);
+                if (rev === 10 || rev === 11) rev = 0;
+                if (rev !== parseInt(cpf.charAt(9))) return false;
+
+                sum = 0;
+                for (let i = 0; i < 10; i++) sum += parseInt(cpf.charAt(i)) * (11 - i);
+                rev = 11 - (sum % 11);
+                if (rev === 10 || rev === 11) rev = 0;
+                if (rev !== parseInt(cpf.charAt(10))) return false;
+
+                return true;
+            }
+
+            // 2. Age Validation (15 to 75 years)
+            function validateAge(birthDateStr) {
+                if (!birthDateStr) return { valid: false, msg: 'Data de nascimento é obrigatória.' };
+                
+                const birthDate = new Date(birthDateStr);
+                if (isNaN(birthDate.getTime())) return { valid: false, msg: 'Data de nascimento em formato inválido.' };
+
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                if (age < 15) {
+                    return { valid: false, msg: `O aluno possui ${age} anos. A idade mínima permitida é de 15 anos.` };
+                }
+                if (age > 75) {
+                    return { valid: false, msg: `O aluno possui ${age} anos. A idade máxima permitida é de 75 anos.` };
+                }
+
+                return { valid: true, age };
+            }
+
+            // 3. Email Format Validation
+            function isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            // --- STRICT INPUT RESTRICTION HANDLERS ---
+
+            // Block NUMBERS from Text Fields
+            document.querySelectorAll('.text-only-field').forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    // Allow navigation/control keys
+                    if (e.key.length > 1 || e.ctrlKey || e.altKey || e.metaKey) return;
+                    if (/\d/.test(e.key)) {
+                        e.preventDefault();
+                        showToast('Números não são permitidos neste campo de texto!', 'warning');
+                    }
+                });
+
+                input.addEventListener('input', (e) => {
+                    if (/\d/.test(e.target.value)) {
+                        e.target.value = e.target.value.replace(/\d/g, '');
+                        showToast('Ação Bloqueada: Números foram removidos do campo.', 'warning');
+                    }
+                });
+            });
+
+            // Block LETTERS/NON-DIGITS from Numeric Fields
+            document.querySelectorAll('.numeric-only-field').forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    // Allow navigation & control keys
+                    if (e.key.length > 1 || e.ctrlKey || e.altKey || e.metaKey) return;
+                    if (!/\d/.test(e.key)) {
+                        e.preventDefault();
+                        showToast('Apenas números são permitidos neste campo!', 'warning');
+                    }
+                });
+
+                input.addEventListener('input', (e) => {
+                    const id = e.target.id;
+                    if (id === 'cpf') {
+                        e.target.value = applyCPFMask(e.target.value);
+                    } else if (id === 'cep') {
+                        e.target.value = applyCEPMask(e.target.value);
+                    } else if (id === 'numero') {
+                        e.target.value = e.target.value.replace(/\D/g, '');
+                    }
+                });
+            });
+
+            // Enforce max length of 4000 chars on all text inputs
+            document.querySelectorAll('input[type="text"], input[type="email"]').forEach(input => {
+                input.setAttribute('maxlength', '4000');
+            });
+
+            // ViaCEP API auto-fetch on CEP completion
+            const cepInput = document.getElementById('cep');
+            cepInput.addEventListener('blur', () => {
+                const cep = cepInput.value.replace(/\D/g, '');
+                if (cep.length === 8) {
+                    const loadingSpinner = document.getElementById('cep-loading');
+                    loadingSpinner.classList.remove('hidden');
+
+                    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.erro) {
+                                if (data.logradouro) document.getElementById('logradouro').value = data.logradouro;
+                                if (data.bairro) document.getElementById('bairro').value = data.bairro;
+                                if (data.localidade) document.getElementById('cidade').value = data.localidade;
+                                if (data.uf) document.getElementById('estado').value = data.uf;
+                            } else {
+                                showToast('CEP não encontrado na base do Correios.', 'warning');
+                            }
+                        })
+                        .catch(() => {
+                            // Silent fail for API issues
+                        })
+                        .finally(() => {
+                            loadingSpinner.classList.add('hidden');
+                        });
+                }
+            });
+
+            // --- STEP VALIDATION ENGINE ---
+            function validateStep(step) {
+                if (step === 1) {
+                    const nome = document.getElementById('nome_completo').value.trim();
+                    const nascimento = document.getElementById('data_nascimento').value;
+                    const cpf = document.getElementById('cpf').value;
+                    const responsavel = document.getElementById('nome_responsavel').value.trim();
+                    const emailPessoal = document.getElementById('email_pessoal').value.trim();
+                    const emailInst = document.getElementById('email_institucional').value.trim();
+
+                    if (!nome) { showToast('Preencha o Nome Completo do aluno.'); return false; }
+                    if (/\d/.test(nome)) { showToast('Nome Completo não pode conter números.'); return false; }
+
+                    if (!nascimento) { showToast('Informe a Data de Nascimento.'); return false; }
+                    const ageCheck = validateAge(nascimento);
+                    if (!ageCheck.valid) { showToast(ageCheck.msg); return false; }
+
+                    if (!cpf) { showToast('Preencha o CPF do aluno.'); return false; }
+                    if (!isValidCPF(cpf)) { showToast('CPF inválido! Verifique os números informados.'); return false; }
+
+                    if (!responsavel) { showToast('Informe o Nome do Pai, Mãe ou Responsável Legal.'); return false; }
+                    if (/\d/.test(responsavel)) { showToast('Nome do Responsável não pode conter números.'); return false; }
+
+                    if (!emailPessoal || !isValidEmail(emailPessoal)) { showToast('Informe um E-mail Pessoal válido.'); return false; }
+                    if (!emailInst || !isValidEmail(emailInst)) { showToast('Informe um E-mail Institucional válido.'); return false; }
+
+                    return true;
+                }
+
+                if (step === 2) {
+                    const pais = document.getElementById('pais').value.trim();
+                    const estado = document.getElementById('estado').value;
+                    const cidade = document.getElementById('cidade').value.trim();
+                    const bairro = document.getElementById('bairro').value.trim();
+                    const cep = document.getElementById('cep').value.replace(/\D/g, '');
+                    const logradouro = document.getElementById('logradouro').value.trim();
+                    const numero = document.getElementById('numero').value.trim();
+
+                    if (!cep || cep.length !== 8) { showToast('Informe um CEP válido contendo 8 dígitos.'); return false; }
+                    if (!pais) { showToast('Informe o País de residência.'); return false; }
+                    if (/\d/.test(pais)) { showToast('País não pode conter números.'); return false; }
+
+                    if (!estado) { showToast('Selecione o Estado (UF).'); return false; }
+                    if (!cidade) { showToast('Informe a Cidade.'); return false; }
+                    if (/\d/.test(cidade)) { showToast('Cidade não pode conter números.'); return false; }
+
+                    if (!bairro) { showToast('Informe o Bairro.'); return false; }
+                    if (!logradouro) { showToast('Informe o Logradouro.'); return false; }
+                    if (!numero) { showToast('Informe o Número da residência.'); return false; }
+
+                    return true;
+                }
+
+                if (step === 3) {
+                    const curso = document.getElementById('nome_curso').value;
+                    const turno = document.getElementById('turno').value;
+                    const modalidade = document.getElementById('modalidade').value;
+                    const instrutor = document.getElementById('nome_instrutor').value.trim();
+
+                    if (!curso) { showToast('Selecione o Nome do Curso.'); return false; }
+                    if (!turno) { showToast('Selecione o Turno das atividades.'); return false; }
+                    if (!modalidade) { showToast('Selecione a Modalidade do curso.'); return false; }
+                    if (!instrutor) { showToast('Informe o Nome do Instrutor Responsável.'); return false; }
+                    if (/\d/.test(instrutor)) { showToast('Nome do Instrutor não pode conter números.'); return false; }
+
+                    return true;
+                }
+
+                return true;
+            }
+
+            // --- NAVIGATION CONTROLLER ---
+            function updateUI() {
+                // Update Step Display
+                document.querySelectorAll('.step-content').forEach((el, idx) => {
+                    if (idx + 1 === currentStep) {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                });
+
+                // Update Wizard Bar Nodes
+                for (let i = 1; i <= maxSteps; i++) {
+                    const node = document.getElementById(`node-${i}`);
+                    const label = document.getElementById(`label-${i}`);
+
+                    if (i < currentStep) {
+                        node.className = "w-11 h-11 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-base shadow-md ring-4 ring-white transition-all duration-300";
+                        node.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        label.className = "mt-2 text-xs sm:text-sm font-semibold text-emerald-600";
+                    } else if (i === currentStep) {
+                        node.className = "w-11 h-11 rounded-full bg-senai-blue text-white flex items-center justify-center font-bold text-base shadow-md ring-4 ring-white transition-all duration-300";
+                        node.innerText = i;
+                        label.className = "mt-2 text-xs sm:text-sm font-semibold text-senai-blue";
+                    } else {
+                        node.className = "w-11 h-11 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-base ring-4 ring-white transition-all duration-300";
+                        node.innerText = i;
+                        label.className = "mt-2 text-xs sm:text-sm font-medium text-slate-400";
+                    }
+                }
+
+                // Update Progress Bar Fill Width
+                const fillPercent = ((currentStep - 1) / (maxSteps - 1)) * 100;
+                document.getElementById('progress-bar-fill').style.width = `${fillPercent}%`;
+
+                // Update Action Buttons
+                const btnPrev = document.getElementById('btn-prev');
+                const btnNext = document.getElementById('btn-next');
+                const wizardNav = document.getElementById('wizard-navigation');
+
+                if (currentStep === 1) {
+                    btnPrev.classList.add('hidden');
+                    btnPrev.classList.remove('flex');
+                } else if (currentStep <= maxSteps) {
+                    btnPrev.classList.remove('hidden');
+                    btnPrev.classList.add('flex');
+                }
+
+                if (currentStep < maxSteps) {
+                    btnNext.innerHTML = '<span>Avançar</span> <i class="fa-solid fa-arrow-right"></i>';
+                    btnNext.className = "px-7 py-3 bg-softgreen hover:bg-softgreen-hover text-white font-bold rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-2 text-base";
+                } else if (currentStep === maxSteps) {
+                    btnNext.innerHTML = '<span>Finalizar e Gerar PDF</span> <i class="fa-solid fa-file-pdf"></i>';
+                    btnNext.className = "px-7 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition flex items-center gap-2 text-base";
+                } else {
+                    // Success View
+                    wizardNav.classList.add('hidden');
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Next / Proceed Button Click Handler
+            document.getElementById('btn-next').addEventListener('click', () => {
+                if (validateStep(currentStep)) {
+                    if (currentStep < maxSteps) {
+                        currentStep++;
+                        updateUI();
+                    } else if (currentStep === maxSteps) {
+                        // Submit and Generate PDF
+                        generatePDFAndComplete();
+                    }
+                }
+            });
+
+            // Back Button Click Handler
+            document.getElementById('btn-prev').addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateUI();
+                }
+            });
+
+            // --- PDF GENERATION & SUBMISSION ---
+            function generatePDFAndComplete() {
+                // Populate PDF Document Template
+                const nome = document.getElementById('nome_completo').value.trim();
+                const cpf = document.getElementById('cpf').value;
+                const nascimento = document.getElementById('data_nascimento').value;
+                const responsavel = document.getElementById('nome_responsavel').value.trim();
+                const emailPessoal = document.getElementById('email_pessoal').value.trim();
+                const emailInst = document.getElementById('email_institucional').value.trim();
+
+                const logradouro = document.getElementById('logradouro').value.trim();
+                const numero = document.getElementById('numero').value.trim();
+                const complemento = document.getElementById('complemento').value.trim() || 'N/A';
+                const bairro = document.getElementById('bairro').value.trim();
+                const cep = document.getElementById('cep').value;
+                const cidade = document.getElementById('cidade').value.trim();
+                const estado = document.getElementById('estado').value;
+                const pais = document.getElementById('pais').value.trim();
+
+                const curso = document.getElementById('nome_curso').value;
+                const turno = document.getElementById('turno').value;
+                const modalidade = document.getElementById('modalidade').value;
+                const instrutor = document.getElementById('nome_instrutor').value.trim();
+
+                // Format birthdate to DD/MM/YYYY
+                const [year, month, day] = nascimento.split('-');
+                const formattedDate = `${day}/${month}/${year}`;
+
+                // Set PDF DOM Content
+                document.getElementById('pdf-nome').innerText = nome;
+                document.getElementById('pdf-cpf').innerText = cpf;
+                document.getElementById('pdf-nascimento').innerText = formattedDate;
+                document.getElementById('pdf-responsavel').innerText = responsavel;
+                document.getElementById('pdf-email-pessoal').innerText = emailPessoal;
+                document.getElementById('pdf-email-inst').innerText = emailInst;
+
+                document.getElementById('pdf-logradouro').innerText = logradouro;
+                document.getElementById('pdf-numero').innerText = numero;
+                document.getElementById('pdf-complemento').innerText = complemento;
+                document.getElementById('pdf-bairro').innerText = bairro;
+                document.getElementById('pdf-cep').innerText = cep;
+                document.getElementById('pdf-cidade').innerText = cidade;
+                document.getElementById('pdf-estado').innerText = estado;
+                document.getElementById('pdf-pais').innerText = pais;
+
+                document.getElementById('pdf-curso').innerText = curso;
+                document.getElementById('pdf-turno').innerText = turno;
+                document.getElementById('pdf-modalidade').innerText = modalidade;
+                document.getElementById('pdf-instrutor').innerText = instrutor;
+                document.getElementById('pdf-sig-aluno').innerText = nome;
+
+                // Set Timestamp & Protocol Number
+                const now = new Date();
+                document.getElementById('pdf-date').innerText = `Emitido em: ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR')}`;
+                const protocolNumber = 'SENAI-' + now.getFullYear() + '-' + Math.floor(100000 + Math.random() * 900000);
+                document.getElementById('pdf-protocolo').innerText = protocolNumber;
+
+                // Update Summary Card on Success Screen
+                document.getElementById('summary-nome').innerText = nome;
+                document.getElementById('summary-cpf').innerText = cpf;
+                document.getElementById('summary-curso').innerText = curso;
+                document.getElementById('summary-turno').innerText = `${turno} (${modalidade})`;
+
+                // Show Success Screen View
+                document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+                document.getElementById('step-success').classList.add('active');
+                document.getElementById('wizard-navigation').classList.add('hidden');
+
+                // Trigger PDF Download via html2pdf
+                downloadPDF(nome);
+            }
+
+            function downloadPDF(studentName) {
+                const element = document.getElementById('pdf-document');
+                const sanitizedName = (studentName || 'Aluno').replace(/[^a-zA-Z0-9]/g, '_');
+                
+                const opt = {
+                    margin:       10,
+                    filename:     `Ficha_Inscricao_SENAI_${sanitizedName}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).save()
+                    .then(() => {
+                        showToast('PDF baixado com sucesso!', 'success');
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showToast('Erro ao gerar arquivo PDF. Tente o botão de re-download.', 'error');
+                    });
+            }
+
+            // Button handlers for success screen
+            document.getElementById('btn-redownload').addEventListener('click', () => {
+                const nome = document.getElementById('nome_completo').value.trim();
+                downloadPDF(nome);
+            });
+
+            document.getElementById('btn-restart').addEventListener('click', () => {
+                document.getElementById('senai-registration-form').reset();
+                currentStep = 1;
+                document.getElementById('wizard-navigation').classList.remove('hidden');
+                updateUI();
+            });
+
+        });
+    </script>
+</body>
+</html>

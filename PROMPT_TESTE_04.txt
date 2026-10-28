@@ -1,0 +1,38 @@
+PROMPT PARA O MUNDO SENAI- TESTE 04- NOVA INICIATIVA
+
+Você é um desenvolvedor front-end, e precisa criar um site na web interativo para capturar informações de alunos frequentadores do SENAI, contendo seus nomes e informações pessoais, endereços detalhados e informações sobre seus próprios cursos. O site deve conter três páginas, descritas a seguir: 
+
+Página 1: a primeira pagina deve reter as informações pessoais dos alunos, sendo elas: 
+-nome completo
+-data de nascimento
+-CPF
+-nome do pai e mãe (ou responsável legal)
+-e-mail (pessoal e institucional)
+
+página 2: a segunda pagina deve reter informações de endereço dos alunos, contendo:
+- país 
+- estado
+-cidade
+-bairro
+-cep
+-logradouro
+-numero
+-complemento (se morar em condomínio deve colocar bloco e numero do apartamento. parte não obrigatória)
+
+Página 3: a terceira pagina deve conter as informações do curso que o aluno frequenta, sendo elas:
+-nome do curso
+-turno em que realiza as atividades
+-nome do instrutor responsável
+-modalidade (presencial ou EAD)
+
+ESPECIFAÇÕES DO CÓDIGO: 
+
+esse site será postado na web de forma legitima, então as especificações a seguir são extremamente necessárias:
+
+Cada pagina deve ter seu código próprio, as 3 páginas NÃO DEVEM compartilhar o mesmo código, em hipótese alguma. Todos os campos de resposta são obrigatórios (exceto o complemento na segunda página)
+o usuário deve ser impedido de acessar a página seguinte antes que preencha todos os campos. os códigos das páginas devem ser divididos em 3 arquivos, um para HTML(index.html), um para css (style.css) e um para o Java Script (Script.js). o controle principal de todas as páginas deve ser o Java script, ele deve ser usado para IMPEDIR que:
+- o usuário coloque números em campos de texto (caracteres especiais são permitidos);
+-o usuário insira texto em campos numéricos; 
+-o usuário avance de página sem preencher todos os campos obrigatórios;
+- impedir que o usuário insira um cpf inválido;
+O site deve exibir um alerta sutil, mas visível toda vez que o usuário tentar realizar qualquer ação proibida. os campos de texto devem ter um limite implícito de 4.000 caracteres incluindo espaços e caracteres especiais, o campo de idade deve ter um limite mínimo de 15 anos, e um limite máximo de 75 anos. o estilo do site deve ser simples, utilizando as cores padrão do Senai (branco e azul) enquanto o botão de prosseguir deve ter uma coloração verde leve. ao final de todas as etapas, o site deve automaticamente baixar um arquivo pdf em formato de formulário contendo todas as informações que o usuário respondeu.
