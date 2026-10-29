@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro SENAI - Dados Pessoais</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <svg class="senai-logo" viewBox="0 0 300 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="300" height="80" fill="#005C9E" rx="8"/>
+                    <text x="150" y="52" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" letter-spacing="4">SENAI</text>
+                </svg>
+            </div>
+            <h1>Cadastro de Aluno - Cursos Técnicos</h1>
+            <div class="step-indicator">Passo 1 de 3: Dados Pessoais</div>
+        </header>
+
+        <form id="form-pagina1" class="form-step" novalidate>
+            <div class="form-group">
+                <label for="nome">Nome Completo *</label>
+                <input type="text" id="nome" name="nome" maxlength="250" class="only-text" required placeholder="Digite seu nome completo">
+            </div>
+
+            <div class="form-group">
+                <label for="data_nascimento">Data de Nascimento * (Idade entre 15 e 75 anos)</label>
+                <input type="date" id="data_nascimento" name="data_nascimento" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefone">Número de Telefone *</label>
+                <input type="text" id="telefone" name="telefone" maxlength="15" class="mask-phone" required placeholder="(00) 00000-0000">
+            </div>
+
+            <div class="form-group">
+                <label for="cpf">CPF *</label>
+                <input type="text" id="cpf" name="cpf" maxlength="14" class="mask-cpf" required placeholder="000.000.000-00">
+            </div>
+
+            <div class="form-group">
+                <label for="responsavel">Nome do Pai, Mãe ou Responsável Legal *</label>
+                <input type="text" id="responsavel" name="responsavel" maxlength="250" class="only-text" required placeholder="Nome do responsável">
+            </div>
+
+            <div class="form-group">
+                <label for="email_pessoal">E-mail Pessoal *</label>
+                <input type="email" id="email_pessoal" name="email_pessoal" maxlength="250" required placeholder="seu.email@exemplo.com">
+            </div>
+
+            <div class="form-group">
+                <label for="email_institucional">E-mail Institucional *</label>
+                <input type="email" id="email_institucional" name="email_institucional" maxlength="250" required placeholder="seu.nome@senai.br">
+            </div>
+
+            <div class="button-group align-right">
+                <button type="submit" class="btn btn-primary">Próximo (Endereço) &rarr;</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

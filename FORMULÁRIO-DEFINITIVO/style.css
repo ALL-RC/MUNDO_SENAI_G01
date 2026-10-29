@@ -1,0 +1,222 @@
+/* Variáveis de Cores Institucionais SENAI */
+:root {
+    --senai-blue: #005C9E;
+    --senai-blue-dark: #003366;
+    --senai-white: #FFFFFF;
+    --bg-gray: #F4F6F9;
+    --text-color: #333333;
+    --border-color: #CCCCCC;
+    --error-color: #D9534F;
+    --success-color: #28A745;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-gray);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    background-color: var(--senai-white);
+    width: 100%;
+    max-width: 650px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-top: 8px solid var(--senai-blue);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.senai-logo {
+    width: 180px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.header h1 {
+    font-size: 1.4rem;
+    color: var(--senai-blue-dark);
+    margin-bottom: 5px;
+}
+
+.step-indicator {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--senai-blue);
+    background-color: #EBF3FA;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--senai-blue);
+    box-shadow: 0 0 5px rgba(0, 92, 158, 0.3);
+}
+
+.help-text {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    gap: 10px;
+}
+
+.button-group.align-right {
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--senai-blue);
+    color: var(--senai-white);
+}
+
+.btn-primary:hover {
+    background-color: var(--senai-blue-dark);
+}
+
+.btn-secondary {
+    background-color: #6C757D;
+    color: var(--senai-white);
+}
+
+.btn-secondary:hover {
+    background-color: #5A6268;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: var(--senai-white);
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+/* Estilização para o PDF gerado */
+.pdf-wrapper {
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    color: #111;
+    background: #FFF;
+}
+
+.pdf-header {
+    text-align: center;
+    border-bottom: 2px solid var(--senai-blue);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.pdf-header h2 {
+    color: var(--senai-blue);
+    font-size: 16pt;
+}
+
+.pdf-header h3 {
+    color: #333;
+    font-size: 13pt;
+    margin-top: 5px;
+}
+
+.pdf-section {
+    margin-bottom: 20px;
+}
+
+.pdf-section h4 {
+    background-color: var(--senai-blue);
+    color: #FFF;
+    padding: 6px 10px;
+    font-size: 11pt;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pdf-table td {
+    padding: 8px;
+    border-bottom: 1px solid #DDD;
+    font-size: 10pt;
+}
+
+.pdf-table td:first-child {
+    width: 35%;
+    color: #444;
+}
+
+.pdf-footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 9pt;
+}
+
+.signature-line {
+    margin-top: 50px;
+    font-weight: bold;
+}

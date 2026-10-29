@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro SENAI - Curso Técnico</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Biblioteca para geração do PDF perfeito sem cortes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <svg class="senai-logo" viewBox="0 0 300 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="300" height="80" fill="#005C9E" rx="8"/>
+                    <text x="150" y="52" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" letter-spacing="4">SENAI</text>
+                </svg>
+            </div>
+            <h1>Cadastro de Aluno - Cursos Técnicos</h1>
+            <div class="step-indicator">Passo 3 de 3: Informações do Curso</div>
+        </header>
+
+        <form id="form-pagina3" class="form-step" novalidate>
+            <div class="form-group">
+                <label for="nome_curso">Nome do Curso Técnico *</label>
+                <input type="text" id="nome_curso" name="nome_curso" maxlength="250" class="only-text" required placeholder="Ex: Técnico em Desenvolvimento de Sistemas">
+            </div>
+
+            <div class="form-group">
+                <label for="turno">Turno Frequentado *</label>
+                <select id="turno" name="turno" required>
+                    <option value="">Selecione o turno</option>
+                    <option value="Manhã">Manhã</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Noite">Noite</option>
+                    <option value="Integral">Integral</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="modalidade">Modalidade *</label>
+                <select id="modalidade" name="modalidade" required>
+                    <option value="">Selecione a modalidade</option>
+                    <option value="Presencial">Presencial</option>
+                    <option value="EAD">EAD (Educação a Distância)</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <a href="endereco.html" class="btn btn-secondary">&larr; Voltar</a>
+                <button type="submit" class="btn btn-success">Finalizar e Baixar PDF</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Layout Oculto Exclusivo para Exportação Impecável do PDF -->
+    <div id="pdf-container" style="display: none;">
+        <div class="pdf-wrapper">
+            <div class="pdf-header">
+                <h2>SERVIÇO NACIONAL DE APRENDIZAGEM INDUSTRIAL - SENAI</h2>
+                <h3>Ficha de Matrícula - Curso Técnico</h3>
+            </div>
+            
+            <div class="pdf-section">
+                <h4>1. DADOS PESSOAIS</h4>
+                <table class="pdf-table">
+                    <tr><td><strong>Nome Completo:</strong></td><td id="pdf-nome"></td></tr>
+                    <tr><td><strong>Data de Nascimento:</strong></td><td id="pdf-data-nascimento"></td></tr>
+                    <tr><td><strong>Telefone:</strong></td><td id="pdf-telefone"></td></tr>
+                    <tr><td><strong>CPF:</strong></td><td id="pdf-cpf"></td></tr>
+                    <tr><td><strong>Responsável Legal:</strong></td><td id="pdf-responsavel"></td></tr>
+                    <tr><td><strong>E-mail Pessoal:</strong></td><td id="pdf-email-pessoal"></td></tr>
+                    <tr><td><strong>E-mail Institucional:</strong></td><td id="pdf-email-institucional"></td></tr>
+                </table>
+            </div>
+
+            <div class="pdf-section">
+                <h4>2. ENDEREÇO RESIDENCIAL</h4>
+                <table class="pdf-table">
+                    <tr><td><strong>CEP:</strong></td><td id="pdf-cep"></td></tr>
+                    <tr><td><strong>Logradouro:</strong></td><td id="pdf-logradouro"></td></tr>
+                    <tr><td><strong>Número:</strong></td><td id="pdf-numero"></td></tr>
+                    <tr><td><strong>Bairro:</strong></td><td id="pdf-bairro"></td></tr>
+                    <tr><td><strong>Cidade / UF:</strong></td><td id="pdf-cidade-uf"></td></tr>
+                    <tr><td><strong>Complemento:</strong></td><td id="pdf-complemento"></td></tr>
+                </table>
+            </div>
+
+            <div class="pdf-section">
+                <h4>3. DADOS DO CURSO TÉCNICO</h4>
+                <table class="pdf-table">
+                    <tr><td><strong>Nome do Curso:</strong></td><td id="pdf-curso"></td></tr>
+                    <tr><td><strong>Turno:</strong></td><td id="pdf-turno"></td></tr>
+                    <tr><td><strong>Modalidade:</strong></td><td id="pdf-modalidade"></td></tr>
+                </table>
+            </div>
+
+            <div class="pdf-footer">
+                <p>Declaro que todas as informações prestadas neste formulário são verdadeiras e autênticas.</p>
+                <div class="signature-line">
+                    ____________________________________________________<br>
+                    Assinatura do Aluno ou Responsável Legal
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
