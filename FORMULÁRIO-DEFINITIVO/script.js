@@ -307,19 +307,31 @@ function gerarPDF() {
     document.getElementById("pdf-modalidade").innerText = p3.modalidade || "";
 
     const element = document.getElementById("pdf-container");
-    element.style.display = "block"; // Torna visível para captura do canvas
+    element.style.display = "block"; // Torna visível para captura
+
+    // Rola a janela até o topo para evitar que o scroll afete a captura
+    window.scrollTo(0, 0);
 
     const opt = {
-        margin:       10,
+        margin:       10, // Margem de 10mm
         filename:     `Ficha_Inscricao_SENAI_${p1.nome ? p1.nome.replace(/\s+/g, "_") : "Aluno"}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true,
+            scrollY: 0, // Garante captura a partir do topo do elemento
+            scrollX: 0
+        },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Impede corte dentro dos blocos
     };
 
-    html2pdf().set(opt).from(element).save().then(() => {
-        element.style.display = "none"; // Oculta novamente após baixar
-    });
+    // Pequeno atraso (100ms) para garantir o cálculo de layout do DOM
+    setTimeout(() => {
+        html2pdf().set(opt).from(element).save().then(() => {
+            element.style.display = "none"; // Oculta novamente após o download
+        });
+    }, 100);
 }
 
 /* ========================================================

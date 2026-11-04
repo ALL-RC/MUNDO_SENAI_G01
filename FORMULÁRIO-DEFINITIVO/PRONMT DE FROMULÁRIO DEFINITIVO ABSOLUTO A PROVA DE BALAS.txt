@@ -1,0 +1,44 @@
+você é um desenvolvedor front-end, e foi responsabilizado de criar um site interativo para web, site esse com a finalidade de armazenar dados de alunos dos cursos técnicos do senai, o código inteiro deve ser feito com html, css e Java script. esse site deve ter três páginas, configuradas com java script para que nenhuma ação fora do comum ocorra. esse projeto deve ser dividido em três arquivos principais:
+- o arquivo do programa principal ( a primeira página) nomeado index.html
+-a folha de estilo aplicada em todas as páginas, nomeada de style.css
+-o programa que vai gerenciar todo o formulário em java script, nomeada de script.js
+
+a segunda e terceira página serão feitas também em html, e irão utilizar a mesma folha de estilo e o mesmo arquivo java script da primeira página, sem necessidade de fazer um para cada página. seguindo a baixo será descrito o conteúdo de cada pagina, que será feito em html.
+
+HTML:
+-Página 1:
+essa é a pagina inicial e o arquivo principal que será nomeada de index.html; essa página deve reter as informações pessoais dos alunos do senai, sendo essas:
+nome completo
+numero de telefone
+cpf válido
+nome do pai, mãe ou responsável legal
+e mail pessoal e institucional
+
+-Página 2: 
+essa é a segunda página, que será nomeada como endereco.html, essa página deve reter os dados de endereço dos usuários, sendo estes:
+CEP
+numero da casa
+logradouro
+cidade
+bairro
+estado
+complemento (se mora em condomínio, o bloco e numero do apartamento)
+
+-Página 3: essa é a terceira e ultima página do site, que será nomeada como curso.html, essa página deve reter as informações do curso técnico que o usuário frequenta, sendo elas:
+nome do curso
+turno frequentado (manha, tarde, noite etc...)
+modalidade (presencial ou ead)
+
+FOLHA DE ESTILO:
+o site deve ter um estilo simples e funcional, com as cores padrão do senai (branco e azul) tendo também sua logo no cabeçalho da página
+
+ESPECIFICAÇÕES PARA O JAVA SCRIPT:
+essa é de todas a parte mais importante de todo o programa, pois será responsável por gerenciar o que deve e não deve ocorrer. é extremamente importante que o usuário seja proibido de fazer o que não deveria, por tanto, o usuário deve ser proibido de:
+colocar números e caracteres especiais em campos de texto (capslock e shift são permitidos)
+colocar letras e caracteres especiais em campos numéricos
+colocar caracteres além do padrão em campos de numero de telefone, data de nascimento, cpf, cep
+colocar um cpf inválido ou um cep que não esteja registrado legalmente
+válidar um email apenas com "@" e "." (o email deve estar completo)
+avançar a página sem responder todos os campos (exceto o campo de complemento da página 2)
+
+o site deve exibir um alerta simples, mas visível caso o usuário tente realizar qualquer uma das ações proibidas descritas acima, e deve contar com um limite de 250 caracteres incluindo espaços para campos de texto, além de um limite de idade mínima de 15 anos, e um limite máximo de 75 anos. ao final do site, após tudo ser respondido, o site deve permitir que o usuário baixe um arquivo em pdf, no formato de formulário, contendo todas as informações respondidas pelo usuário, sem cortes ou vazamento de conteúdo, o pdf deve estar impecável e completo.
